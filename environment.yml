@@ -1,0 +1,8 @@
+name: qcp
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - qiskit
+  - numpy
+  - pre-commit
