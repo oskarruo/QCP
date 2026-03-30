@@ -15,6 +15,15 @@ def median_heuristic(X):
     )
     return med
 
+def median_heuristic_fast(X, n_samples=500):
+    idx = np.random.choice(len(X), min(n_samples, len(X)), replace=False)
+    X_sub = X[idx]
+
+    dists = np.linalg.norm(
+        X_sub[:, None, :] - X_sub[None, :, :],
+        axis=-1
+    )
+    return np.median(dists)
 
 def hardware_efficient_iqp_gates(n_qubits):
     """
