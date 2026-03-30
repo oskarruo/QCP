@@ -1,5 +1,6 @@
 import numpy as np
-
+import itertools
+from itertools import combinations
 
 def median_heuristic(X):
     """
@@ -25,7 +26,7 @@ def median_heuristic_fast(X, n_samples=500):
     )
     return np.median(dists)
 
-def hardware_efficient_iqp_gates(n_qubits):
+def nearest_neighbour_IQP_ansatz(n_qubits):
     """
     Nearest-neighbour IQP ansatz.
 

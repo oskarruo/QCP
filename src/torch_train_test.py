@@ -1,13 +1,12 @@
 import numpy as np
 from iqp_to_qiskit import IqpCircuitQiskit
-from utils import median_heuristic_fast, hardware_efficient_iqp_gates
+from utils import median_heuristic_fast, nearest_neighbour_IQP_ansatz
 from torch_training import TrainerTorch
 from torch_methods import mmd_loss_torch
-import torch
 
 n_qubits = 50
 n_ops = 200
-gates = hardware_efficient_iqp_gates(n_qubits)
+gates = nearest_neighbour_IQP_ansatz(n_qubits)
 circuit = IqpCircuitQiskit(n_qubits, gates)
 
 X_train = np.random.binomial(1, 0.5, size=(3000, n_qubits))
