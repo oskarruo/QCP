@@ -1,6 +1,6 @@
 import numpy as np
 from iqp_to_qiskit import IqpCircuitQiskit
-from utils import nearest_neighbour_IQP_ansatz
+from ansatzes import nearest_neighbour_IQP_ansatz
 
 # Simple test of the circuit
 if __name__ == "__main__":
@@ -14,4 +14,3 @@ if __name__ == "__main__":
 
     print("Samples:", samples)
     print("Probs:", probs)
-    

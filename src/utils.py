@@ -1,6 +1,5 @@
 import numpy as np
-import itertools
-from itertools import combinations
+
 
 def median_heuristic(X):
     """
@@ -16,31 +15,10 @@ def median_heuristic(X):
     )
     return med
 
+
 def median_heuristic_fast(X, n_samples=500):
     idx = np.random.choice(len(X), min(n_samples, len(X)), replace=False)
     X_sub = X[idx]
 
-    dists = np.linalg.norm(
-        X_sub[:, None, :] - X_sub[None, :, :],
-        axis=-1
-    )
+    dists = np.linalg.norm(X_sub[:, None, :] - X_sub[None, :, :], axis=-1)
     return np.median(dists)
-
-def nearest_neighbour_IQP_ansatz(n_qubits):
-    """
-    Nearest-neighbour IQP ansatz.
-
-    Returns:
-        gates: list of gates in IQP format [[[i,j]], ...]
-    """
-    gates = []
-
-    # Single-qubit Z terms
-    for i in range(n_qubits):
-        gates.append([[i]])
-
-    # Nearest-neighbour ZZ interactions
-    for i in range(n_qubits - 1):
-        gates.append([[i, i + 1]])
-
-    return gates

@@ -1,6 +1,7 @@
 import numpy as np
 from iqp_to_qiskit import IqpCircuitQiskit
-from utils import median_heuristic_fast, nearest_neighbour_IQP_ansatz
+from utils import median_heuristic_fast
+from ansatzes import nearest_neighbour_IQP_ansatz
 from torch_training import TrainerTorch
 from torch_methods import mmd_loss_torch
 
@@ -27,7 +28,7 @@ loss_kwargs = {
     "ground_truth": X_train,
     "sigma": sigma,
     "n_ops": n_ops,
-    "ops": ops
+    "ops": ops,
 }
 
 trainer = TrainerTorch(mmd_loss_torch, lr=0.01)
