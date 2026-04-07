@@ -5,14 +5,14 @@ import numpy as np
 class ExpvalFunction(torch.autograd.Function):
     @staticmethod
     def forward(ctx, params, circuit, ops):
-        params_np = params.detach().numpy()
+        params_np = params.detach().cpu().numpy()
         expvals = circuit.op_expval(params_np, ops)
 
         ctx.save_for_backward(params)
         ctx.circuit = circuit
         ctx.ops = ops
 
-        return torch.tensor(expvals, dtype=torch.float32)
+        return torch.tensor(expvals, dtype=params.dtype, device=params.device)
 
     @staticmethod
     def backward(ctx, grad_output):
@@ -20,7 +20,7 @@ class ExpvalFunction(torch.autograd.Function):
         circuit = ctx.circuit
         ops = ctx.ops
 
-        params_np = params.detach().numpy()
+        params_np = params.detach().cpu().numpy()
         shift = np.pi / 4
 
         grads = []
@@ -38,7 +38,7 @@ class ExpvalFunction(torch.autograd.Function):
             grad_i = (f_plus - f_minus)
             grads.append(grad_i)
 
-        jacobian = torch.tensor(np.array(grads).T, dtype=torch.float32)
+        jacobian = torch.tensor(np.array(grads).T, dtype=params.dtype, device=grad_output.device)
         grad_params = grad_output @ jacobian
 
         return grad_params, None, None, None
@@ -81,6 +81,6 @@ def mmd_loss_torch(params, circuit, ground_truth, sigma, n_ops, ops):
     expvals = expvals_torch(params, circuit, ops)
 
     data_vals = 1 - 2 * ((ground_truth @ ops.T) % 2)
-    tr_data = torch.tensor(data_vals.mean(axis=0), dtype=torch.float32)
+    tr_data = torch.tensor(data_vals.mean(axis=0), dtype=expvals.dtype, device=expvals.device)
 
     return torch.mean((expvals - tr_data) ** 2)
