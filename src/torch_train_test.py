@@ -1,17 +1,17 @@
 import numpy as np
 from iqp_to_qiskit import IqpCircuitQiskit
-from utils import median_heuristic_fast
+from utils import median_heuristic_fast, generate_structured_dataset
 from ansatzes import nearest_neighbour_IQP_ansatz
 from torch_training import TrainerTorch
 from torch_methods import mmd_loss_torch
+from qiskit import qpy
 
 n_qubits = 50
 n_ops = 200
 gates = nearest_neighbour_IQP_ansatz(n_qubits)
 circuit = IqpCircuitQiskit(n_qubits, gates)
 
-X_train = np.random.binomial(1, 0.5, size=(3000, n_qubits))
-X_train = X_train[X_train.sum(axis=1) < n_qubits // 1.5]
+X_train = generate_structured_dataset(n_samples=10000, n_qubits=n_qubits)
 
 print(f"Training data: {len(X_train)} samples")
 
@@ -32,9 +32,8 @@ loss_kwargs = {
 }
 
 trainer = TrainerTorch(mmd_loss_torch, lr=0.01)
-trainer.train(n_iters=100, loss_kwargs=loss_kwargs)
+trainer.train(n_iters=200, loss_kwargs=loss_kwargs)
 
-final_params = trainer.final_params
-print("Final parameters")
-for gate, theta in zip(gates, final_params):
-    print(f"  {gate}  →  θ = {theta:.4f} rad")
+final_circuit = circuit.iqp_circuit(trainer.final_params)
+with open("circuit.qpy", "wb") as file:
+    qpy.dump([final_circuit], file)
