@@ -1,8 +1,7 @@
 name: qcp
 channels:
+  - conda-forge
   - defaults
 dependencies:
-  - python=3.10
-  - qiskit
-  - numpy
+  - python=3.11
   - pre-commit
