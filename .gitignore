@@ -1,3 +1,6 @@
 .vscode
 __pycache__
 *.qpy
+*.csv
+iqm_token.txt
+*.ipynb
