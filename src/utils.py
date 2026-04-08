@@ -50,3 +50,22 @@ def generate_structured_dataset(n_qubits, n_samples, rng=None):
         samples.extend(combined.tolist())
 
     return np.array(samples[:n_samples])
+
+
+def generate_simple_dataset(n_qubits, n_samples, rng=None):
+    """
+    Generates a simple dataset with few 1s.
+    """
+    if rng is None:
+        rng = np.random.default_rng(0)
+
+    data = np.zeros((n_samples, n_qubits), dtype=np.int8)
+
+    for i in range(n_samples):
+        k = rng.integers(0, 3)
+
+        if k > 0:
+            idx = rng.choice(n_qubits, size=k, replace=False)
+            data[i, idx] = 1
+
+    return data

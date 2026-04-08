@@ -1,6 +1,6 @@
 import numpy as np
 from iqp_to_qiskit import IqpCircuitQiskit
-from utils import median_heuristic_fast, generate_structured_dataset
+from utils import median_heuristic_fast, generate_simple_dataset
 from ansatzes import nearest_neighbour_IQP_ansatz
 from torch_training import TrainerTorch
 from torch_methods import mmd_loss_torch
@@ -11,7 +11,7 @@ n_ops = 200
 gates = nearest_neighbour_IQP_ansatz(n_qubits)
 circuit = IqpCircuitQiskit(n_qubits, gates)
 
-X_train = generate_structured_dataset(n_samples=10000, n_qubits=n_qubits)
+X_train = generate_simple_dataset(n_qubits, n_samples=10000)
 
 print(f"Training data: {len(X_train)} samples")
 
@@ -32,8 +32,9 @@ loss_kwargs = {
 }
 
 trainer = TrainerTorch(mmd_loss_torch, lr=0.01)
-trainer.train(n_iters=200, loss_kwargs=loss_kwargs)
+trainer.train(n_iters=100, loss_kwargs=loss_kwargs)
 
 final_circuit = circuit.iqp_circuit(trainer.final_params)
+final_circuit.measure_all()
 with open("circuit.qpy", "wb") as file:
     qpy.dump([final_circuit], file)
