@@ -4,3 +4,5 @@ __pycache__
 *.csv
 iqm_token.txt
 *.ipynb
+myenv/
+iqpopt/
