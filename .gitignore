@@ -3,6 +3,8 @@ __pycache__
 *.qpy
 *.csv
 iqm_token.txt
-*.ipynb
 myenv/
+iqpopt/
+.venv/
+venv/
 iqpopt/
