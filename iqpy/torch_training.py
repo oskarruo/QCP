@@ -34,6 +34,6 @@ class TrainerTorch:
             self.losses.append(loss.item())
 
             if (i + 1) % 10 == 0 or i == 0:
-                print(f"Step {i + 1:03d} → Loss: {loss.item():.6f}")
+                print(f"Step {i + 1:03d} -> Loss: {loss.item():.6f}")
 
         self.final_params = params.detach().cpu().numpy()

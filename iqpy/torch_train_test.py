@@ -26,8 +26,6 @@ loss_kwargs = {
     "params": params_init,
     "circuit": circuit,
     "ground_truth": X_train,
-    "sigma": sigma,
-    "n_ops": n_ops,
     "ops": ops,
 }
 

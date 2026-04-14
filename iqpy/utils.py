@@ -69,3 +69,30 @@ def generate_simple_dataset(n_qubits, n_samples, rng=None):
             data[i, idx] = 1
 
     return data
+
+
+def generate_experiment_mixture_dataset(n_qubits, n_samples, rng=None):
+    """
+    Samples x in {0,1}^n from the experiment distribution D:
+    - With probability 1/3: x = 0^n
+    - With probability 1/3: each bit is i.i.d. Bernoulli(0.4)
+    - With probability 1/3: each bit is i.i.d. Bernoulli(0.8)
+    """
+    if rng is None:
+        rng = np.random.default_rng(0)
+
+    component = rng.integers(0, 3, size=n_samples)
+    data = np.empty((n_samples, n_qubits), dtype=np.int8)
+
+    mask0 = component == 0
+    data[mask0] = 0
+
+    mask1 = component == 1
+    if np.any(mask1):
+        data[mask1] = rng.binomial(1, 0.4, size=(mask1.sum(), n_qubits))
+
+    mask2 = component == 2
+    if np.any(mask2):
+        data[mask2] = rng.binomial(1, 0.8, size=(mask2.sum(), n_qubits))
+
+    return data
