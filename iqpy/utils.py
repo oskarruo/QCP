@@ -96,3 +96,42 @@ def generate_experiment_mixture_dataset(n_qubits, n_samples, rng=None):
         data[mask2] = rng.binomial(1, 0.8, size=(mask2.sum(), n_qubits))
 
     return data
+
+
+def make_structured_ops(n_qubits, gates, n_random=500, sigma=None):
+    """
+    Build an ops matrix that includes:
+    1. All single-qubit operators Z_i
+    2. All pairwise operators Z_i Z_j that correspond to actual gates
+    3. Additional random operators for broader MMD coverage
+    """
+    structured = []
+
+    # All single-qubit Z_i
+    for i in range(n_qubits):
+        op = np.zeros(n_qubits, dtype=np.float32)
+        op[i] = 1
+        structured.append(op)
+
+    # All pairwise Z_i Z_j that exist as gates in the ansatz
+    for gate in gates:
+        qubits = gate[0]
+        if len(qubits) == 2:
+            op = np.zeros(n_qubits, dtype=np.float32)
+            op[qubits[0]] = 1
+            op[qubits[1]] = 1
+            structured.append(op)
+
+    structured = np.array(structured)
+
+    # Additional random ops for broader coverage
+    if n_random > 0 and sigma is not None:
+        p = (1 - np.exp(-1 / (2 * sigma**2))) / 2
+        random_ops = np.random.binomial(1, p, size=(n_random, n_qubits)).astype(
+            np.float32
+        )
+        ops = np.vstack([structured, random_ops])
+    else:
+        ops = structured
+
+    return ops
